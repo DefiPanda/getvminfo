@@ -83,6 +83,7 @@ void getProcessInfo(struct task_struct *call_task, char *respbuf, char *process_
     // }
 
     mm = call_task->mm;
+    down_read(&(mm->mmap_sem));
     if(mm != NULL) {
       mmap = mm->mmap;
       while(mmap != NULL){
@@ -96,6 +97,7 @@ void getProcessInfo(struct task_struct *call_task, char *respbuf, char *process_
         mmap = mmap->vm_next;
       }
     }
+    up_read(&(mm->mmap_sem));
   }
 
   else cur_pid = 0;
@@ -191,7 +193,7 @@ static ssize_t getpinfo_call(struct file *file, const char __user *buf,
 
   sprintf(respbuf, "Success:\n");
   
-  rcu_read_lock();
+  // rcu_read_lock();
   getProcessInfo(call_task, respbuf, "Current");
   // parent = call_task->real_parent;
   // if(parent == NULL){
@@ -210,7 +212,7 @@ static ssize_t getpinfo_call(struct file *file, const char __user *buf,
   //     }
   //   }
   // }
-  rcu_read_unlock();
+  // rcu_read_unlock();
   
   /* Here the response has been generated and is ready for the user
    * program to access it by a read() call.
