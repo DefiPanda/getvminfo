@@ -1,0 +1,14 @@
+Compiler & Load Module:
+make
+gcc caller.c -o caller
+sudo rmmod getpinfo.ko
+sudo insmod getpinfo.ko
+
+Call program:
+./caller
+
+To test the program with 1,2,3,4 sibling programs, run following respectively:
+./caller | grep ''
+./caller | grep '' | grep ''
+./caller | grep '' | grep '' | grep ''
+./caller | grep '' | grep '' | grep '' | grep ''
