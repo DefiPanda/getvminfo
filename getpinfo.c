@@ -33,32 +33,32 @@ struct dentry *dir, *file;
 void getProcessInfo(struct task_struct *call_task, char *respbuf, char *process_descriptor) {
   pid_t cur_pid = 0;
   //real parent's pid
-  pid_t parent_pid = 0;
+  // pid_t parent_pid = 0;
   //state of the process
-  unsigned long state = 0;
+  // unsigned long state = 0;
   //flags of the process
-  unsigned int flags = 0;
+  // unsigned int flags = 0;
   //priority of the processc
-  int prio = 0;
+  // int prio = 0;
   //the command called by the process
-  char comm[TASK_COMM_LEN];
+  // char comm[TASK_COMM_LEN];
   //the struct for current process;
-  struct fs_struct *fs;
+  // struct fs_struct *fs;
   //current working directory name
-  unsigned char *relative_dirname = kmalloc(DNAME_INLINE_LEN_MIN, GFP_ATOMIC);
+  // unsigned char *relative_dirname = kmalloc(DNAME_INLINE_LEN_MIN, GFP_ATOMIC);
   //virtual memory struct for the process
   struct mm_struct *mm;
   struct vm_area_struct *mmap;
   //number of VMAs allocated to the process
-  int map_count = 0;
-  //total pages mapped 
-  unsigned long total_vm = 0;
-  //Shared pages (files)
-  unsigned long shared_vm = 0;
-  //VM_EXEC & ~VM_WRITE
-  unsigned long exec_vm = 0;
-  //VM_GROWSUP/DOWN
-  unsigned long stack_vm = 0;
+  // int map_count = 0;
+  // //total pages mapped 
+  // unsigned long total_vm = 0;
+  // //Shared pages (files)
+  // unsigned long shared_vm = 0;
+  // //VM_EXEC & ~VM_WRITE
+  // unsigned long exec_vm = 0;
+  // //VM_GROWSUP/DOWN
+  // unsigned long stack_vm = 0;
   //repsonse line
   char resp_line[MAX_LINE];
   struct pid *pid_p;
@@ -69,18 +69,18 @@ void getProcessInfo(struct task_struct *call_task, char *respbuf, char *process_
   pid_p = get_task_pid(call_task, PIDTYPE_PID);
   if (pid_p != NULL) {
     cur_pid = pid_vnr(pid_p);
-    parent_pid = call_task->real_parent->pid;
-    state = call_task->state;
-    flags = call_task->flags;
-    prio = call_task->prio;
-    strcpy(comm, call_task->comm);
-    strcat(comm, "\0");
+    // parent_pid = call_task->real_parent->pid;
+    // state = call_task->state;
+    // flags = call_task->flags;
+    // prio = call_task->prio;
+    // strcpy(comm, call_task->comm);
+    // strcat(comm, "\0");
     
-    fs = call_task->fs;
-    if(fs != NULL) {
-      struct dentry *relative_dentry = fs->pwd.dentry;
-      relative_dirname = relative_dentry->d_iname;
-    }
+    // fs = call_task->fs;
+    // if(fs != NULL) {
+    //   struct dentry *relative_dentry = fs->pwd.dentry;
+    //   relative_dirname = relative_dentry->d_iname;
+    // }
 
     mm = call_task->mm;
     if(mm != NULL) {
@@ -90,6 +90,8 @@ void getProcessInfo(struct task_struct *call_task, char *respbuf, char *process_
         sprintf(resp_line, " start linear address    %lu\n", mmap->vm_start);
         strcat(respbuf, resp_line);
         sprintf(resp_line, " start end address    %lu\n", mmap->vm_end);
+        strcat(respbuf, resp_line);
+        sprintf(resp_line, " vm_flags %08lx\n", mmap->vm_flags);
         strcat(respbuf, resp_line);
         mmap = mmap->vm_next;
       }
@@ -102,28 +104,27 @@ void getProcessInfo(struct task_struct *call_task, char *respbuf, char *process_
   strcat(respbuf, resp_line);
   sprintf(resp_line, " PID %d\n", cur_pid);
   strcat(respbuf, resp_line);
-  sprintf(resp_line, "     parent %d\n", parent_pid);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     state %lu\n", state);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     flags %08x\n", flags);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     priority %d\n", prio);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     command %s\n", comm);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     cwd %s\n", relative_dirname);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     number of VMAs allocated %d\n", map_count);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     total VM logical pages allocated %lu\n", total_vm);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     number of shared pages allocated %lu\n", shared_vm);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     number of exec pages allocated %lu\n", exec_vm);
-  strcat(respbuf, resp_line);
-  sprintf(resp_line, "     number of stack pages allocated %lu\n\n", stack_vm);
-  strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     parent %d\n", parent_pid);
+  // strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     state %lu\n", state);
+  // strcat(respbuf, resp_line);
+  
+  // sprintf(resp_line, "     priority %d\n", prio);
+  // strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     command %s\n", comm);
+  // strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     cwd %s\n", relative_dirname);
+  // strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     number of VMAs allocated %d\n", map_count);
+  // strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     total VM logical pages allocated %lu\n", total_vm);
+  // strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     number of shared pages allocated %lu\n", shared_vm);
+  // strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     number of exec pages allocated %lu\n", exec_vm);
+  // strcat(respbuf, resp_line);
+  // sprintf(resp_line, "     number of stack pages allocated %lu\n\n", stack_vm);
+  // strcat(respbuf, resp_line);
 }
 
 /* This function emulates the handling of a system call by
@@ -139,8 +140,8 @@ static ssize_t getpinfo_call(struct file *file, const char __user *buf,
   int page_fault_flag;
   char callbuf[MAX_CALL];
   char parameter1[MAX_CALL];
-  struct task_struct *parent;
-  struct list_head *sibling, *sibling_list;
+  // struct task_struct *parent;
+  // struct list_head *sibling, *sibling_list;
 
   /* the user's write() call should not include a count that exceeds
    * the size of the module's buffer for the call string.
