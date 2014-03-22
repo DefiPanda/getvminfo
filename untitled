@@ -7,8 +7,8 @@
 #include <linux/debugfs.h>
 #include <linux/uaccess.h>
 #include <linux/sched.h>
-#include <linux/mm.h>
 #include <linux/mm_types.h>
+#include <linux/mm.h>
 
 #include "getpinfo.h" /* used by both kernel module and user program */
 
@@ -23,138 +23,76 @@
  * while the variable is non-NULL is rejected).
  */
 
-const struct vm_operations_struct *original_vm_ops_pointers[MAX_VMAS];
-struct vm_area_struct *original_vmas[MAX_VMAS];
 struct task_struct *call_task = NULL;
+// const struct vm_operations_struct *original_vm_ops;
+const struct vm_operations_struct **original_vm_ops_pointers;
 char *respbuf;
-int vma_size;
 
 int file_value;
+int vma_size;
 struct dentry *dir, *file;
 
-static void open_rt(struct vm_area_struct * vma) {
-   int i;
-   for(i = 0; i < vma_size; i++){
-     if(original_vmas[i] == vma){
-       if(original_vm_ops_pointers[i]->open){
-         original_vm_ops_pointers[i]->open(vma);
-         return;
-       }
-     }
-   }
-}
+// static void open_rt(struct vm_area_struct * area) {
+//    original_vm_ops->open(area);
+// }
 
-static void close_rt(struct vm_area_struct * vma) {
-  int i;
-   for(i = 0; i < vma_size; i++){
-     if(original_vmas[i] == vma){
-       if(original_vm_ops_pointers[i]->close){
-         printk(KERN_DEBUG "vmas_size %i\n", vma_size);
-         printk(KERN_DEBUG "The address of original_vma page os: %p\n", original_vmas[i]);
-         printk(KERN_DEBUG "The address of vma page os: %p\n", vma);
-         original_vm_ops_pointers[i]->close(vma);
-         return;
-       }
-     }
-   }
-}
+// static void close_rt(struct vm_area_struct * area) {
+//   original_vm_ops->close(area);
+// }
 
-static int fault_rt(struct vm_area_struct *vma, struct vm_fault *vmf) {
-   int i;
-   for(i = 0; i < vma_size; i++){
-     if(original_vmas[i] == vma){
-       if(original_vm_ops_pointers[i]->fault){
-         return original_vm_ops_pointers[i]->fault(vma, vmf);
-       }
-     }
-   }
-   return -1;
-}
+// static int fault_rt(struct vm_area_struct *vma, struct vm_fault *vmf) {
+//   printk(KERN_DEBUG " !!!!!!!!!!!!!!!!start linear address    %lu\n", vma->vm_start);
+//   return original_vm_ops->fault(vma, vmf);
+// }
 
-static int page_mkwrite_rt(struct vm_area_struct *vma, struct vm_fault *vmf){
-   int i;
-   for(i = 0; i < vma_size; i++){
-     if(original_vmas[i] == vma){
-      if(original_vm_ops_pointers[i]->page_mkwrite){
-       return original_vm_ops_pointers[i]->page_mkwrite(vma, vmf);
-      }
-     }
-   }
-   return -1;
-}
+// static int page_mkwrite_rt(struct vm_area_struct *vma, struct vm_fault *vmf){
+//   return original_vm_ops->page_mkwrite(vma, vmf);
+// }
 
-static int access_rt(struct vm_area_struct *vma, unsigned long addr, void *buf, int len, int write){
-   int i;
-   for(i = 0; i < vma_size; i++){
-     if(original_vmas[i] == vma){
-      if(original_vm_ops_pointers[i]->access){
-       return original_vm_ops_pointers[i]->access(vma, addr, buf, len, write);
-      }
-     }
-   }
-  return -1;
-}
+// static int access_rt(struct vm_area_struct *vma, unsigned long addr, void *buf, int len, int write){
+//   return original_vm_ops->access(vma, addr, buf, len, write);
+// }
 
-#ifdef CONFIG_NUMA
-static int set_policy_rt(struct vm_area_struct *vma, struct mempolicy *new){
-   int i;
-   for(i = 0; i < vma_size; i++){
-     if(original_vmas[i] == vma){
-      if(original_vm_ops_pointers[i]->set_policy){
-        return original_vm_ops_pointers[i]->set_policy(vma, new);
-      }
-     }
-   }
-   return -1;
-}
+// #ifdef CONFIG_NUMA
+// static int set_policy_rt(struct vm_area_struct *vma, struct mempolicy *new){
+//   return original_vm_ops->set_policy(vma, new);
+// }
 
-static struct mempolicy get_policy_rt(struct vm_area_struct *vma, unsigned long addr){
-   int i;
-   for(i = 0; i < vma_size; i++){
-     if(original_vmas[i] == vma){
-      if(original_vm_ops_pointers[i]->get_policy){
-       return original_vm_ops_pointers[i]->get_policy(vma, addr);
-      }
-     }
-   }
-   return NULL;
-}
+// static struct mempolicy get_policy_rt(struct vm_area_struct *vma, unsigned long addr){
+//   return original_vm_ops->get_policy(vma, addr);
+// }
 
-static int migrate_rt(struct vm_area_struct *vma, const nodemask_t *from, const nodemask_t *to, unsigned long flags){
-   int i;
-   for(i = 0; i < vma_size; i++){
-     if(original_vmas[i] == vma){
-      if(original_vm_ops_pointers[i]->migrate){
-       return original_vm_ops_pointers[i]->migrate(vma, from, to, flags);
-      }
-     }
-   }
-  return -1;
-}
-#endif
+// static int migrate_rt(struct vm_area_struct *vma, const nodemask_t *from, const nodemask_t *to, unsigned long flags){
+//   return original_vm_ops->migrate(vma, from, to, flags);
+// }
+// #endif
 
-struct vm_operations_struct page_fault_info_class  = {
-              .open = open_rt,
-              .close = close_rt,
-              .fault = fault_rt,
-              .page_mkwrite = page_mkwrite_rt,
-              .access = access_rt,   
-           #ifdef CONFIG_NUMA
-              .set_policy = set_policy_rt,
-              .get_policy = get_policy_rt,
-              .migrate = migrate_rt,
-           #endif
-          };
+// struct vm_operations_struct page_fault_info_class  = {
+//     .open = open_rt,
+//     .close = close_rt,
+//     .fault = fault_rt,
+//     .page_mkwrite = page_mkwrite_rt,
+//     .access = access_rt,   
+//  #ifdef CONFIG_NUMA
+//     .set_policy = set_policy_rt,
+//     .get_policy = get_policy_rt,
+//     .migrate = migrate_rt,
+//  #endif
+// };
+
+// void (*open)(struct vm_area_struct * area){
+//   original_vm_ops->open;
+// }
 
 /* This function uses kernel functions for access to pid for a process 
    */
 void getProcessInfo(struct task_struct *call_task, char *respbuf, int page_fault_flag) {
   pid_t cur_pid = 0;
   struct mm_struct *mm;
+  int i;
   struct vm_area_struct *mmap;
   //repsonse line
   char resp_line[MAX_LINE];
-  int i;
   struct pid *pid_p;
   {
     /* data */
@@ -170,53 +108,43 @@ void getProcessInfo(struct task_struct *call_task, char *respbuf, int page_fault
       vma_size = 0;
       mmap = mm->mmap;
       while(mmap != NULL){
-        mmap = mmap->vm_next;
         vma_size += 1;
-      }
-      //printk(KERN_DEBUG "The number of vma pages are: %i\n", vma_size);
-      i = 0;
-      if(page_fault_flag == 1){
-        mmap = mm->mmap;
-        while(mmap != NULL){
-          if(mmap->vm_ops != NULL){
-            original_vm_ops_pointers[i] = mmap->vm_ops;
-            original_vmas[i] = mmap;
-            mmap->vm_ops = &page_fault_info_class;
-          }  
-          mmap = mmap->vm_next;
-          i++;
-        }
+        mmap = mmap->vm_next;
       }
       // i = 0;
       // if(page_fault_flag == 1){
       //   mmap = mm->mmap;
       //   while(mmap != NULL){
-      //     printk(KERN_DEBUG "vma: %p", original_vmas[i]);
-      //     printk(KERN_DEBUG "op: %p", original_vm_ops_pointers[i]);
-      //     // mmap->vm_ops = &page_fault_info_class;
+      //     //original_vm_ops_pointers[i] = kmalloc(sizeof(mmap->vm_ops), GFP_ATOMIC);
+      //     //original_vm_ops_pointers[i] = mmap->vm_ops;
       //     mmap = mmap->vm_next;
       //     i++;
       //   }
+      //   i = 0;
       // }
-
-
+      
       mmap = mm->mmap;
       while(mmap != NULL){
-        
         sprintf(resp_line, " start linear address    %lu\n", mmap->vm_start);
         strcat(respbuf, resp_line);
         sprintf(resp_line, " start end address    %lu\n", mmap->vm_end);
         strcat(respbuf, resp_line);
         sprintf(resp_line, " vm_flags %08lx\n", mmap->vm_flags);
-        strcat(respbuf, resp_line);
+        strcat(respbuf, resp_line); 
         mmap = mmap->vm_next;
+        // i++;
       }
+      sprintf(resp_line, " total     %lu\n", mmap->vm_start);
+      strcat(respbuf, resp_line);
     }
     up_read(&(mm->mmap_sem));
+
+    
   }
 
   else cur_pid = 0;
 
+  strcat(respbuf, resp_line);
   sprintf(resp_line, " PID %d\n", cur_pid);
   strcat(respbuf, resp_line);
 }
@@ -234,8 +162,6 @@ static ssize_t getpinfo_call(struct file *file, const char __user *buf,
   int page_fault_flag;
   char callbuf[MAX_CALL];
   char parameter1[MAX_CALL];
-  // struct task_struct *parent;
-  // struct list_head *sibling, *sibling_list;
 
   /* the user's write() call should not include a count that exceeds
    * the size of the module's buffer for the call string.
@@ -284,7 +210,6 @@ static ssize_t getpinfo_call(struct file *file, const char __user *buf,
   }
 
   sprintf(respbuf, "Success:\n");
-  
   getProcessInfo(call_task, respbuf, page_fault_flag);
   
   /* Here the response has been generated and is ready for the user
