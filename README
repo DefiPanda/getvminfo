@@ -1,14 +1,6 @@
 Compiler & Load Module:
-make
-gcc caller.c -o caller
-sudo rmmod getpinfo.ko
-sudo insmod getpinfo.ko
+sudo rmmod getpinfo.ko && make && sudo insmod getpinfo.ko && gcc caller.c -o caller
 
 Call program:
-./caller
-
-To test the program with 1,2,3,4 sibling programs, run following respectively:
-./caller | grep ''
-./caller | grep '' | grep ''
-./caller | grep '' | grep '' | grep ''
-./caller | grep '' | grep '' | grep '' | grep ''
+./caller 1 #for using new page fault server
+./caller other_int #for using general service
