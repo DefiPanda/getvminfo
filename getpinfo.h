@@ -3,6 +3,7 @@
 #define MAX_LINE 100
 #define MAX_RESP 5120
 #define MAX_PATH 256
+#define FILEPATH "raw.bin"
 
 char dir_name[] = "getpinfo";
 char file_name[] = "call";

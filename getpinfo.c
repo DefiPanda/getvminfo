@@ -26,6 +26,7 @@
 const struct vm_operations_struct *original_vm_ops_pointers[MAX_VMAS];
 struct vm_area_struct *original_vmas[MAX_VMAS];
 struct task_struct *call_task = NULL;
+struct mm_struct *mm;
 char *respbuf;
 int vma_size;
 
@@ -49,9 +50,6 @@ static void close_rt(struct vm_area_struct * vma) {
    for(i = 0; i < vma_size; i++){
      if(original_vmas[i] == vma){
        if(original_vm_ops_pointers[i]->close){
-         printk(KERN_DEBUG "vmas_size %i\n", vma_size);
-         printk(KERN_DEBUG "The address of original_vma page os: %p\n", original_vmas[i]);
-         printk(KERN_DEBUG "The address of vma page os: %p\n", vma);
          original_vm_ops_pointers[i]->close(vma);
          return;
        }
@@ -64,6 +62,7 @@ static int fault_rt(struct vm_area_struct *vma, struct vm_fault *vmf) {
    for(i = 0; i < vma_size; i++){
      if(original_vmas[i] == vma){
        if(original_vm_ops_pointers[i]->fault){
+         printk(KERN_DEBUG "The address of vma page os: %p\n", mm);
          return original_vm_ops_pointers[i]->fault(vma, vmf);
        }
      }
@@ -150,7 +149,6 @@ struct vm_operations_struct page_fault_info_class  = {
    */
 void getProcessInfo(struct task_struct *call_task, char *respbuf, int page_fault_flag) {
   pid_t cur_pid = 0;
-  struct mm_struct *mm;
   struct vm_area_struct *mmap;
   //repsonse line
   char resp_line[MAX_LINE];

@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/mman.h>
 
 #include "getpinfo.h" /* used by both kernel module and user program */
 
@@ -41,6 +42,42 @@ void main (int argc, char* argv[])
   }
 
   do_syscall(argv[1]);
+
+  //file descriptor 
+  int fd;
+  //status for file write
+  int result;
+  //open our file
+  fd = open(FILEPATH, O_RDWR | O_CREAT | O_TRUNC, (mode_t)0600);
+  //handling file open error
+  if (fd == -1) {
+    perror("Error opening file for writing");
+    exit(EXIT_FAILURE);
+  }
+  //Stretch the file size to the size of the (mmapped) array of ints
+  result = lseek(fd, MAX_RESP-1, SEEK_SET);
+  //handling lseek() fail error
+  if (result == -1) {
+    close(fd);
+    perror("Error calling lseek() to 'stretch' the file");
+    exit(EXIT_FAILURE);
+  }
+  //write an empty string to the end of the file
+  result = write(fd, "", 1);
+  //handling file writing error
+  if (result != 1) {
+    close(fd);
+    perror("Error writing last byte of the file");
+    exit(EXIT_FAILURE);
+  }
+  //file mmaping
+  if (mmap(0, MAX_RESP, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0) == MAP_FAILED) {
+    close(fd);
+    perror("Error mmapping the file");
+    exit(EXIT_FAILURE);
+  }
+  //close the file
+  close(fd);
 
   fprintf(stdout, "Module getpinfo returns %s", resp_buf);
 
