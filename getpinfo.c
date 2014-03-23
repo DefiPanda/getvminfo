@@ -59,15 +59,30 @@ static void close_rt(struct vm_area_struct * vma) {
 
 static int fault_rt(struct vm_area_struct *vma, struct vm_fault *vmf) {
    int i;
+   int ret = -1;
+   unsigned long address;
+   ktime_t calltime, delta, rettime;
+   unsigned long long duration;
+   calltime = ktime_get();
    for(i = 0; i < vma_size; i++){
      if(original_vmas[i] == vma){
        if(original_vm_ops_pointers[i]->fault){
-         printk(KERN_DEBUG "The address of vma page os: %p\n", mm);
-         return original_vm_ops_pointers[i]->fault(vma, vmf);
+         address = (unsigned long)vmf->virtual_address;
+         printk(KERN_DEBUG "The virtual page number: %lu\n", address >> PAGE_SHIFT);
+         printk(KERN_DEBUG "The offset of logical page: %lu\n", vmf->pgoff << PAGE_SHIFT);
+         if(vmf->page){
+           printk(KERN_DEBUG "the real page frame number (pfn) of a page: %lx\n", page_to_pfn(vmf->page));
+         }
+         
+         ret = original_vm_ops_pointers[i]->fault(vma, vmf);
        }
      }
    }
-   return -1;
+   rettime = ktime_get();
+   delta = ktime_sub(rettime, calltime);
+   duration = (unsigned long long) ktime_to_ns(delta);
+   printk(KERN_DEBUG "\n\nPage fault handler finished after %lld nano secs\n", duration);
+   return ret;
 }
 
 static int page_mkwrite_rt(struct vm_area_struct *vma, struct vm_fault *vmf){
