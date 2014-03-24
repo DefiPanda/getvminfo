@@ -1,4 +1,4 @@
-obj-m += getpinfo.o
+obj-m += getvminfo.o
 
 K=$(shell uname -r)
 M=$(PWD)

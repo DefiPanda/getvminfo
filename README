@@ -1,5 +1,8 @@
 Compiler & Load Module:
-sudo rmmod getpinfo.ko && make && sudo insmod getpinfo.ko && gcc caller.c -o caller
+first time use -----
+make && sudo insmod getvminfo.ko && gcc caller.c -o caller
+second time or later use ----
+sudo rmmod getvminfo.ko && make && sudo insmod getvminfo.ko && gcc caller.c -o caller
 
 Call program:
 ./caller 1 #for using new page fault server

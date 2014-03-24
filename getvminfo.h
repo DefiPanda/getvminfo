@@ -5,5 +5,5 @@
 #define MAX_PATH 256
 #define FILEPATH "raw.bin"
 
-char dir_name[] = "getpinfo";
+char dir_name[] = "getvminfo";
 char file_name[] = "call";

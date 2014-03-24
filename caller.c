@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#include "getpinfo.h" /* used by both kernel module and user program */
+#include "getvminfo.h" /* used by both kernel module and user program */
 
 int fp;
 char the_file[256] = "/sys/kernel/debug/";
@@ -85,20 +85,20 @@ void main (int argc, char* argv[])
     }
   }
   //try random
-  for(i = 0; i < 10 * MAX_RESP; i++){
-    int index = rand_lim(MAX_RESP - 1);
-    map[index];
-  }
+  // for(i = 0; i < 10 * MAX_RESP; i++){
+  //   int index = rand_lim(MAX_RESP - 1);
+  //   map[index];
+  // }
   //try stride at pace 10
-  for(j = 0; j < 100; j++){
-    for(i = 0; i < MAX_RESP; i += 10){
-      map[i];
-    }
-  }
+  // for(j = 0; j < 100; j++){
+  //   for(i = 0; i < MAX_RESP; i += 10){
+  //     map[i];
+  //   }
+  // }
   //close the file
   close(fd);
 
-  fprintf(stdout, "Module getpinfo returns %s", resp_buf);
+  fprintf(stdout, "Module getvminfo returns %s", resp_buf);
 
   close (fp);
 } /* end main() */

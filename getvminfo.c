@@ -10,7 +10,7 @@
 #include <linux/mm.h>
 #include <linux/mm_types.h>
 
-#include "getpinfo.h" /* used by both kernel module and user program */
+#include "getvminfo.h" /* used by both kernel module and user program */
 
 /* The following two variables are global state shared between
  * the "call" and "return" functions.  They need to be protected
@@ -71,7 +71,7 @@ static int fault_rt(struct vm_area_struct *vma, struct vm_fault *vmf) {
          printk(KERN_DEBUG "The virtual page number: %lu\n", address >> PAGE_SHIFT);
          printk(KERN_DEBUG "The offset of logical page: %lu\n", vmf->pgoff << PAGE_SHIFT);
          if(vmf->page){
-           printk(KERN_DEBUG "the real page frame number (pfn) of a page: %lx\n", page_to_pfn(vmf->page));
+           printk(KERN_DEBUG "!!!!!!!the real page frame number (pfn) of a page: %lx\n", page_to_pfn(vmf->page));
          }
          
          ret = original_vm_ops_pointers[i]->fault(vma, vmf);
@@ -81,7 +81,7 @@ static int fault_rt(struct vm_area_struct *vma, struct vm_fault *vmf) {
    rettime = ktime_get();
    delta = ktime_sub(rettime, calltime);
    duration = (unsigned long long) ktime_to_ns(delta);
-   printk(KERN_DEBUG "\n\nPage fault occurred at %lld nano secs\n", (unsigned long long)ktime_to_ns(calltime));
+   printk(KERN_DEBUG "!!!!!!!!Page fault occurred at %lld nano secs\n", (unsigned long long)ktime_to_ns(calltime));
    printk(KERN_DEBUG "Page fault handler finished after %lld nano secs\n", duration);
    return ret;
 }
@@ -240,7 +240,7 @@ void getProcessInfo(struct task_struct *call_task, char *respbuf, int page_fault
  * the requested function and preparing a response.
  */
 
-static ssize_t getpinfo_call(struct file *file, const char __user *buf,
+static ssize_t getvminfo_call(struct file *file, const char __user *buf,
                                 size_t count, loff_t *ppos)
 {
   int rc;
@@ -292,7 +292,7 @@ static ssize_t getpinfo_call(struct file *file, const char __user *buf,
 
   if (scan_count != 1 || kstrtoint(parameter1, 10, &page_fault_flag) != 0) {
       strcpy(respbuf, "Failed: invalid operation\n");
-      printk(KERN_DEBUG "getpinfo: call %s will return %s\n", callbuf, respbuf);
+      printk(KERN_DEBUG "getvminfo: call %s will return %s\n", callbuf, respbuf);
       preempt_enable();
       return count;  /* write() calls return the number of bytes written */
   }
@@ -304,7 +304,7 @@ static ssize_t getpinfo_call(struct file *file, const char __user *buf,
   /* Here the response has been generated and is ready for the user
    * program to access it by a read() call.
    */
-  printk(KERN_DEBUG "getpinfo: call %s will return %s", callbuf, respbuf);
+  printk(KERN_DEBUG "getvminfo: call %s will return %s", callbuf, respbuf);
   preempt_enable();
   
   *ppos = 0;  /* reset the offset to zero */
@@ -315,7 +315,7 @@ static ssize_t getpinfo_call(struct file *file, const char __user *buf,
  * the response to the user.
  */
 
-static ssize_t getpinfo_return(struct file *file, char __user *userbuf,
+static ssize_t getvminfo_return(struct file *file, char __user *userbuf,
                                 size_t count, loff_t *ppos)
 {
   int rc; 
@@ -353,8 +353,8 @@ static ssize_t getpinfo_return(struct file *file, char __user *userbuf,
 } 
 
 static const struct file_operations my_fops = {
-        .read = getpinfo_return,
-        .write = getpinfo_call,
+        .read = getvminfo_return,
+        .write = getvminfo_call,
 };
 
 /* This function is called when the module is loaded into the kernel
@@ -363,14 +363,14 @@ static const struct file_operations my_fops = {
  * in user space and the kernel module.
  */
 
-static int __init getpinfo_module_init(void)
+static int __init getvminfo_module_init(void)
 {
 
   /* create a directory to hold the file */
 
   dir = debugfs_create_dir(dir_name, NULL);
   if (dir == NULL) {
-    printk(KERN_DEBUG "getpinfo: error creating %s directory\n", dir_name);
+    printk(KERN_DEBUG "getvminfo: error creating %s directory\n", dir_name);
      return -ENODEV;
   }
 
@@ -381,11 +381,11 @@ static int __init getpinfo_module_init(void)
 
   file = debugfs_create_file(file_name, 0666, dir, &file_value, &my_fops);
   if (file == NULL) {
-    printk(KERN_DEBUG "getpinfo: error creating %s file\n", file_name);
+    printk(KERN_DEBUG "getvminfo: error creating %s file\n", file_name);
      return -ENODEV;
   }
 
-  printk(KERN_DEBUG "getpinfo: created new debugfs directory and file\n");
+  printk(KERN_DEBUG "getvminfo: created new debugfs directory and file\n");
 
   return 0;
 }
@@ -395,7 +395,7 @@ static int __init getpinfo_module_init(void)
  * freeing any memory still allocated.
  */
 
-static void __exit getpinfo_module_exit(void)
+static void __exit getvminfo_module_exit(void)
 {
   debugfs_remove(file);
   debugfs_remove(dir);
@@ -405,6 +405,6 @@ static void __exit getpinfo_module_exit(void)
 
 /* Declarations required in building a module */
 
-module_init(getpinfo_module_init);
-module_exit(getpinfo_module_exit);
+module_init(getvminfo_module_init);
+module_exit(getvminfo_module_exit);
 MODULE_LICENSE("GPL");
