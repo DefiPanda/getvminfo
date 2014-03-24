@@ -1,0 +1,144 @@
+ start linear address    7131136
+ start end address    7135232
+ vm_flags 00040075
+ start linear address    8777728
+ start end address    8900608
+ vm_flags 08000875
+ start linear address    8900608
+ start end address    8904704
+ vm_flags 08100871
+ start linear address    8904704
+ start end address    8908800
+ vm_flags 08100873
+ start linear address    8933376
+ start end address    10575872
+ vm_flags 08000075
+ start linear address    10575872
+ start end address    10584064
+ vm_flags 08100071
+ start linear address    10584064
+ start end address    10588160
+ vm_flags 08100073
+ start linear address    10588160
+ start end address    10600448
+ vm_flags 00100073
+ start linear address    134512640
+ start end address    134516736
+ vm_flags 08001875
+ start linear address    134516736
+ start end address    134520832
+ vm_flags 08101873
+ start linear address    134520832
+ start end address    134524928
+ vm_flags 00100073
+ start linear address    3078324224
+ start end address    307
+The virtual page number: 2404
+The offset of logical page: 913408
+
+
+Page fault occurred at 6997070576239 nano secs
+Page fault handler finished after 3057 nano secs
+The virtual page number: 2228
+The offset of logical page: 192512
+
+
+Page fault occurred at 6997070586969 nano secs
+Page fault handler finished after 1613 nano secs
+The virtual page number: 2256
+The offset of logical page: 307200
+
+
+Page fault occurred at 6997071975800 nano secs
+Page fault handler finished after 1999 nano secs
+The virtual page number: 2245
+The offset of logical page: 262144
+
+
+Page fault occurred at 6997071981592 nano secs
+Page fault handler finished after 1773 nano secs
+The virtual page number: 2248
+The offset of logical page: 274432
+
+
+Page fault occurred at 6997071987022 nano secs
+Page fault handler finished after 1669 nano secs
+The virtual page number: 2305
+The offset of logical page: 507904
+
+
+Page fault occurred at 6997071992311 nano secs
+Page fault handler finished after 1614 nano secs
+The virtual page number: 2289
+The offset of logical page: 442368
+
+
+Page fault occurred at 6997071997875 nano secs
+Page fault handler finished after 1622 nano secs
+The virtual page number: 2291
+The offset of logical page: 450560
+
+
+Page fault occurred at 6997072003214 nano secs
+Page fault handler finished after 1609 nano secs
+The virtual page number: 2277
+The offset of logical page: 393216
+
+
+Page fault occurred at 6997072008557 nano secs
+Page fault handler finished after 1677 nano secs
+The virtual page number: 2390
+The offset of logical page: 856064
+
+
+Page fault occurred at 6997072013896 nano secs
+Page fault handler finished after 1688 nano secs
+The virtual page number: 2292
+The offset of logical page: 454656
+
+
+Page fault occurred at 6997072021993 nano secs
+Page fault handler finished after 1606 nano secs
+The virtual page number: 2290
+The offset of logical page: 446464
+
+
+Page fault occurred at 6997072027171 nano secs
+Page fault handler finished after 1593 nano secs
+The virtual page number: 2517
+The offset of logical page: 1376256
+
+
+Page fault occurred at 6997072037165 nano secs
+Page fault handler finished after 1930 nano secs
+The virtual page number: 2247
+The offset of logical page: 270336
+
+
+Page fault occurred at 6997072042600 nano secs
+Page fault handler finished after 1682 nano secs
+The virtual page number: 2249
+The offset of logical page: 278528
+
+
+Page fault occurred at 6997072047844 nano secs
+Page fault handler finished after 1601 nano secs
+The virtual page number: 2246
+The offset of logical page: 266240
+
+
+Page fault occurred at 6997072085886 nano secs
+Page fault handler finished after 1792 nano secs
+The virtual page number: 2298
+The offset of logical page: 479232
+
+
+Page fault occurred at 6997072091431 nano secs
+Page fault handler finished after 1619 nano secs
+The virtual page number: 2342
+The offset of logical page: 659456
+
+
+Page fault occurred at 6997072101046 nano secs
+Page fault handler finished after 1791 nano secs
+.... there are more 

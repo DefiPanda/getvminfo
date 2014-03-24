@@ -81,7 +81,8 @@ static int fault_rt(struct vm_area_struct *vma, struct vm_fault *vmf) {
    rettime = ktime_get();
    delta = ktime_sub(rettime, calltime);
    duration = (unsigned long long) ktime_to_ns(delta);
-   printk(KERN_DEBUG "\n\nPage fault handler finished after %lld nano secs\n", duration);
+   printk(KERN_DEBUG "\n\nPage fault occurred at %lld nano secs\n", (unsigned long long)ktime_to_ns(calltime));
+   printk(KERN_DEBUG "Page fault handler finished after %lld nano secs\n", duration);
    return ret;
 }
 

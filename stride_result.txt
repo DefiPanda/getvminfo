@@ -1,0 +1,99 @@
+Page fault occurred at 7153940484994 nano secs
+Page fault handler finished after 2915 nano secs
+The virtual page number: 2256
+The offset of logical page: 307200
+
+
+Page fault occurred at 7153941069784 nano secs
+Page fault handler finished after 3622 nano secs
+The virtual page number: 2245
+The offset of logical page: 262144
+
+
+Page fault occurred at 7153941077930 nano secs
+Page fault handler finished after 2045 nano secs
+The virtual page number: 2248
+The offset of logical page: 274432
+
+
+Page fault occurred at 7153941084141 nano secs
+Page fault handler finished after 1915 nano secs
+The virtual page number: 2305
+The offset of logical page: 507904
+
+
+Page fault occurred at 7153941090046 nano secs
+Page fault handler finished after 1824 nano secs
+The virtual page number: 2289
+The offset of logical page: 442368
+
+
+Page fault occurred at 7153941096301 nano secs
+Page fault handler finished after 1802 nano secs
+The virtual page number: 2291
+The offset of logical page: 450560
+
+
+Page fault occurred at 7153941102101 nano secs
+Page fault handler finished after 1794 nano secs
+The virtual page number: 2277
+The offset of logical page: 393216
+
+
+Page fault occurred at 7153941107863 nano secs
+Page fault handler finished after 1872 nano secs
+The virtual page number: 2390
+The offset of logical page: 856064
+
+
+Page fault occurred at 7153941113877 nano secs
+Page fault handler finished after 1881 nano secs
+The virtual page number: 2292
+The offset of logical page: 454656
+
+
+Page fault occurred at 7153941123861 nano secs
+Page fault handler finished after 1858 nano secs
+The virtual page number: 2290
+The offset of logical page: 446464
+
+
+Page fault occurred at 7153941129767 nano secs
+Page fault handler finished after 1782 nano secs
+The virtual page number: 2517
+The offset of logical page: 1376256
+
+
+Page fault occurred at 7153941141269 nano secs
+Page fault handler finished after 2093 nano secs
+The virtual page number: 2247
+The offset of logical page: 270336
+
+
+Page fault occurred at 7153941147215 nano secs
+Page fault handler finished after 1852 nano secs
+The virtual page number: 2249
+The offset of logical page: 278528
+
+
+Page fault occurred at 7153941544697 nano secs
+Page fault handler finished after 3044 nano secs
+The virtual page number: 2246
+The offset of logical page: 266240
+
+
+Page fault occurred at 7153941588306 nano secs
+Page fault handler finished after 2026 nano secs
+The virtual page number: 2298
+The offset of logical page: 479232
+
+
+Page fault occurred at 7153941594652 nano secs
+Page fault handler finished after 1864 nano secs
+The virtual page number: 2342
+The offset of logical page: 659456
+
+
+Page fault occurred at 7153941606335 nano secs
+Page fault handler finished after 1942 nano secs
+.... there are more 

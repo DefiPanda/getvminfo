@@ -21,9 +21,10 @@ void do_syscall(char *call_string);
 
 void main (int argc, char* argv[])
 {
-  int i;
+  int i, j;
   int rc = 0;
   pid_t my_pid;
+  char* map;
 
   /* Open the file */
 
@@ -70,11 +71,29 @@ void main (int argc, char* argv[])
     perror("Error writing last byte of the file");
     exit(EXIT_FAILURE);
   }
+  map = mmap(0, MAX_RESP, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   //file mmaping
-  if (mmap(0, MAX_RESP, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0) == MAP_FAILED) {
+  if (map == MAP_FAILED) {
     close(fd);
     perror("Error mmapping the file");
     exit(EXIT_FAILURE);
+  }
+  //try linear
+  for(j = 0; j < 10; j++){
+    for(i = 0; i < MAX_RESP; i++){
+      map[i];
+    }
+  }
+  //try random
+  for(i = 0; i < 10 * MAX_RESP; i++){
+    int index = rand_lim(MAX_RESP - 1);
+    map[index];
+  }
+  //try stride at pace 10
+  for(j = 0; j < 100; j++){
+    for(i = 0; i < MAX_RESP; i += 10){
+      map[i];
+    }
   }
   //close the file
   close(fd);
@@ -83,6 +102,21 @@ void main (int argc, char* argv[])
 
   close (fp);
 } /* end main() */
+
+//I use this random function found on stackoverflow
+int rand_lim(int limit) {
+/* return a random number between 0 and limit inclusive.
+ */
+
+    int divisor = RAND_MAX/(limit+1);
+    int retval;
+
+    do { 
+        retval = rand() / divisor;
+    } while (retval > limit);
+
+    return retval;
+}
 
 void do_syscall(char *call_string)
 {
